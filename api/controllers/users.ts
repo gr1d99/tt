@@ -6,7 +6,7 @@ import UsersService from "../services/users";
 class UsersController {
     static async create(req: express.Request, res: express.Response) {
         try {
-            const user = UsersService.create(req.body)
+            const user = await UsersService.create(req.body)
             res.status(201).json(user)
         } catch (e: any) {
             utils.errorResponse(e, res)

@@ -1,9 +1,12 @@
 import {DataTypes, Model, Optional} from "sequelize";
 import connection from '../../config/db-connect'
+import {HookReturn} from "sequelize/types/hooks";
+import {ValidationOptions} from "sequelize/types/instance-validator";
 
 export interface UserAttributes {
   id?: string;
   email?: string;
+  password?: string;
   createdAt?: Date;
   updatedAt?: Date
 }
@@ -11,6 +14,7 @@ export interface UserAttributes {
 class User extends Model<UserAttributes, Optional<UserAttributes, 'id'>> implements UserAttributes {
   public readonly id!: string;
   public email!: string;
+  public password!: string;
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
@@ -27,6 +31,10 @@ User.init({
     type: DataTypes.STRING,
     unique: true
   },
+  password: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE
@@ -38,7 +46,17 @@ User.init({
 }, {
   sequelize: connection,
   underscored: false,
-  tableName: 'users'
+  tableName: 'users',
+  hooks: {
+    beforeValidate(instance: User): HookReturn {
+      instance.email = instance.email.trim()
+    }
+  },
+  defaultScope: {
+    attributes: {
+      exclude: ['password']
+    }
+  }
 })
 
 export default User

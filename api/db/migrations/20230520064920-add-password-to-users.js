@@ -1,5 +1,6 @@
 'use strict';
 
+const models = require("../models");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -9,16 +10,9 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn('todos', 'user_id', {
-      type: Sequelize.UUID,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+    await queryInterface.addColumn('users', 'password', {
+      type: Sequelize.STRING
     })
-    await queryInterface.addIndex('todos', ['user_id'], {})
   },
 
   async down (queryInterface, Sequelize) {
@@ -28,7 +22,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn('todos', 'user_id')
-    await queryInterface.removeIndex('todos', ['user_id'], {})
+    await queryInterface.removeColumn('users', 'password')
   }
 };
