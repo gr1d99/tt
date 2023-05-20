@@ -1,5 +1,8 @@
 import User, {UserAttributes} from "../db/models/user";
 import bcrypt from 'bcrypt'
+import express from "express";
+import Todo from "../db/models/todo";
+import {utils} from "../utils";
 
 const SALT_ROUNDS = 10;
 
@@ -31,6 +34,20 @@ class UsersService {
         return await User.findAll({
             include: 'todos'
         })
+    }
+
+    async allTodos(params: express.Request['params'] & { userId?: string }, query: express.Request['query']) {
+        const {userId} = params;
+
+        const userTodos = await Todo.findAndCountAll({
+            ...utils.defaultPaginationOptions(query),
+            where: {
+                userId
+            }
+        })
+
+        return  utils.paginationMeta(userTodos, query)
+
     }
 }
 
