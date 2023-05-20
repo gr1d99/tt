@@ -5,12 +5,14 @@ import schemas from "../schemas";
 
 const usersRouter = express.Router()
 
-usersRouter.post(
+usersRouter
+    .post(
     '/users',
     validate({
         body: schemas.usersSchema.create
     }),
-    UsersController.create
-)
+    UsersController.create)
+    .get('/users', UsersController.all)
+    .get('/users/:id', UsersController.one)
 
 export default usersRouter

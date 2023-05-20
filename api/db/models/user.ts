@@ -1,7 +1,7 @@
 import {DataTypes, Model, Optional} from "sequelize";
 import connection from '../../config/db-connect'
 import {HookReturn} from "sequelize/types/hooks";
-import {ValidationOptions} from "sequelize/types/instance-validator";
+import Todo from "./todo";
 
 export interface UserAttributes {
   id?: string;
@@ -17,6 +17,7 @@ class User extends Model<UserAttributes, Optional<UserAttributes, 'id'>> impleme
   public password!: string;
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
+  static isEmailTaken: (email: string) => Promise<boolean>;
 }
 
 User.init({
@@ -29,7 +30,9 @@ User.init({
   email: {
     allowNull: false,
     type: DataTypes.STRING,
-    unique: true
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     allowNull: false,
@@ -45,7 +48,6 @@ User.init({
   }
 }, {
   sequelize: connection,
-  underscored: false,
   tableName: 'users',
   hooks: {
     beforeValidate(instance: User): HookReturn {
@@ -59,4 +61,14 @@ User.init({
   }
 })
 
+User.hasMany(Todo, { foreignKey: 'userId', as: 'todos' } )
+Todo.belongsTo(User, { foreignKey: 'userId' })
+
+User.isEmailTaken = async (email: string) => {
+  return !!await User.findOne({
+    where: {
+      email
+    }
+  })
+}
 export default User

@@ -1,11 +1,12 @@
 import {DataTypes, Model, Optional} from "sequelize";
 import connection from '../../config/db-connect'
+import User from "./user";
 
 export interface TodoAttributes {
   id?: string;
   description?: string;
   complete?: boolean;
-  user_id?: string;
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date
 }
@@ -14,7 +15,7 @@ class Todo extends Model<TodoAttributes, Optional<TodoAttributes, 'id'>> impleme
   public readonly id!: string;
   public description!: string;
   public complete?: boolean;
-  public user_id!: string;
+  public userId!: string;
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
@@ -35,7 +36,7 @@ Todo.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  user_id: {
+  userId: {
     allowNull: false,
     type: DataTypes.UUID,
   },
@@ -49,8 +50,8 @@ Todo.init({
   }
 }, {
   sequelize: connection,
-  underscored: false,
-  tableName: 'todos'
+  tableName: 'todos',
 })
+
 
 export default Todo

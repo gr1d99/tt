@@ -13,6 +13,7 @@ const create: AllowedSchema = {
     }
 }
 
+
 export const usersSchema = {
-    create
+    create,
 }

@@ -3,7 +3,7 @@ import TodosService from "../services/todos";
 import {utils} from "../utils";
 
 class TodosController {
-    static async create(req: express.Request, res: express.Response) {
+    async create(req: express.Request, res: express.Response) {
         try {
             const todo = await TodosService.create(req.body)
             res.status(201).send(todo)
@@ -12,7 +12,7 @@ class TodosController {
         }
     }
 
-    static async all(req: express.Request, res: express.Response) {
+    async all(req: express.Request, res: express.Response) {
         try {
             const todos = await TodosService.all(req.query)
             res.status(200).send(todos)
@@ -22,4 +22,4 @@ class TodosController {
     }
 }
 
-export default TodosController
+export default new TodosController()
