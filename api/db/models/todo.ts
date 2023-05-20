@@ -1,31 +1,43 @@
 import {DataTypes, Model, Optional} from "sequelize";
-import connection from './../../config/db-connect'
+import connection from '../../config/db-connect'
 
-export interface UserAttributes {
+export interface TodoAttributes {
   id?: string;
-  email?: string;
+  description?: string;
+  complete?: boolean;
+  user_id?: string;
   createdAt?: Date;
   updatedAt?: Date
 }
 
-class User extends Model<UserAttributes, Optional<UserAttributes, 'id'>> implements UserAttributes {
+class Todo extends Model<TodoAttributes, Optional<TodoAttributes, 'id'>> implements TodoAttributes {
   public readonly id!: string;
-  public email!: string;
+  public description!: string;
+  public complete?: boolean;
+  public user_id!: string;
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 }
 
-User.init({
+Todo.init({
   id: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4
   },
-  email: {
+  description: {
     allowNull: false,
     type: DataTypes.STRING,
     unique: true
+  },
+  complete: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  user_id: {
+    allowNull: false,
+    type: DataTypes.UUID,
   },
   createdAt: {
     allowNull: false,
@@ -38,7 +50,7 @@ User.init({
 }, {
   sequelize: connection,
   underscored: false,
-  tableName: 'users'
+  tableName: 'todos'
 })
 
-export default User
+export default Todo
