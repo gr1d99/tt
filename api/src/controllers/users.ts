@@ -1,5 +1,6 @@
 import type express from 'express'
 
+import * as console from 'console'
 import { utils } from '../utils'
 import UsersService from '../services/users'
 

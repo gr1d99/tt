@@ -1,21 +1,7 @@
-import express from 'express'
-import cors from 'cors'
 import { beforeAll, describe } from '@jest/globals'
 import request from 'supertest'
-import UsersController from '../../src/controllers/users'
 import sequelizeConnection from '../../src/config/db-connect'
-
-const appInstance = () => {
-  const app = express()
-  const corsOptions = {
-    origin: '*'
-  }
-  app.use(express.json())
-  app.use(cors(corsOptions))
-  app.use(express.urlencoded({ extended: true }))
-
-  return app
-}
+import app from '../../src/app'
 
 describe('/users', () => {
   beforeAll(async () => {
@@ -32,9 +18,6 @@ describe('/users', () => {
 
   describe('POST /users', () => {
     it('responds with status code 201', (done) => {
-      const app = appInstance()
-      app.post('/users', UsersController.create)
-
       void request(app)
         .post('/users')
         .send({ email: 'test@user.com', password: '1234567' })
@@ -49,14 +32,11 @@ describe('/users', () => {
         })
     })
 
-    it('responds with status code 400', (done) => {
-      const app = appInstance()
-      app.post('/users', UsersController.create)
-
+    it('responds with status code 422', (done) => {
       void request(app)
         .post('/users')
         .send({ email: 'test@mail.com', password: '' })
-        .expect(400)
+        .expect(422)
         .end((err: any, _) => {
           if (err instanceof Error) {
             return done(err)
@@ -68,15 +48,19 @@ describe('/users', () => {
       void request(app)
         .post('/users')
         .send({ email: '', password: '12345678' })
-        .expect(400)
-        .end((err, res) => done())
+        .expect(422)
+        .end((err, res) => {
+          if (err instanceof Error) {
+            return done(err)
+          }
+
+          return done()
+        })
     })
   })
 
   describe('GET /users', () => {
     it('responds with status code 200', (done) => {
-      const app = appInstance()
-      app.get('/users', UsersController.all)
       void request(app)
         .get('/users')
         .expect('Content-Type', /json/)

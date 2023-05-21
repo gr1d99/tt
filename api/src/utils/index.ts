@@ -2,7 +2,7 @@ import { ValidationError, type ValidationErrorItem } from 'sequelize'
 import { type ValidationError as RequestBodyValidationError } from 'express-json-validator-middleware'
 import type express from 'express'
 import type Todo from '../db/models/todo'
-import { DEFAULT_PAGINATION_LIMIT } from '../../constants'
+import { DEFAULT_PAGINATION_LIMIT } from '../constants'
 
 const buildModelErrors = (errors: ValidationErrorItem[]) => errors.map((error) => error.message)
 
@@ -11,10 +11,12 @@ const buildRequestBodyErrors = (error: RequestBodyValidationError) => error.vali
 const errorResponse = (error: any, res: express.Response) => {
   if (error instanceof ValidationError) {
     res.status(422).send({ errors: utils.buildModelErrors(error.errors) })
+    return
   }
 
   if (error instanceof Error) {
     res.status(400).send({ errors: error.message })
+    return
   }
 
   res.status(500).send({ errors: JSON.stringify(error) })
