@@ -13,11 +13,9 @@ class TodosService {
     }
 
     static async all(query: express.Request['query']) {
-        const page = parseInt(query.page as string || '0', 10)
-        const limit = parseInt(query.limit as string || '10', 10)
+
         const data =  await Todo.findAndCountAll({
-            offset: (page - 1) * limit,
-            limit,
+            ...utils.defaultPaginationOptions(query),
             include: [
                 {
                     model: User
@@ -25,7 +23,7 @@ class TodosService {
             ]
         })
 
-        return utils.paginationOptions(data, page, limit)
+        return utils.paginationMeta(data, query)
     }
 }
 

@@ -1,8 +1,18 @@
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
 import express from 'express'
 import cors from 'cors'
 import appRouter from "./routes";
-import "./config/db-connect";
 import requestBodyErrorHandler from "./middlewares/request-body-error-handler";
+import sequelizeConnection from "./config/db-connect";
+
+sequelizeConnection.authenticate().then(() => {
+    console.log('Database connected')
+}).catch((error: any) => {
+    console.error('Database connection error, ', error)
+})
 
 const app = express()
 

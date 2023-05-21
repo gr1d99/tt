@@ -1,6 +1,6 @@
 import {ValidationError, ValidationErrorItem} from "sequelize";
 import {ValidationError as RequestBodyValidationError } from 'express-json-validator-middleware'
-import express from "express";
+import express, {query} from "express";
 import Todo from "../db/models/todo";
 
 const buildModelErrors = (errors: ValidationErrorItem[]) => {
@@ -27,14 +27,33 @@ const errorResponse = (error: any, res: express.Response) => {
     res.status(500).send({ errors: JSON.stringify(error) })
 }
 
-const paginationOptions = (data: {rows: Todo[], count: number}, page: number, limit: number) => {
-    const previous = page === 1 ? 1 : page - 1
+const paginationOptionsFromQuery = (query: express.Request['query']) => {
+    const page = parseInt(query.page as string || '0', 10)
+    const limit = parseInt(query.limit as string || '10', 10)
+
+    return {
+        page,
+        limit
+    }
+}
+const defaultPaginationOptions = (query: express.Request['query']) => {
+    const { page, limit } = paginationOptionsFromQuery(query)
+    const draftOffset = (page - 1) * limit
+    const offset = draftOffset < 0 ? 0 : draftOffset;
+    return {
+        offset,
+        limit,
+    }
+}
+const paginationMeta = (data: {rows: Todo[], count: number}, query: express.Request['query']) => {
+    const { page, limit } = paginationOptionsFromQuery(query)
+    const previous = page === 1 || page === 0 ? 1 : page - 1
     const diff = Math.ceil(data.count / limit)
     const nextPage = diff > page ? page + 1 : page
 
     return {
-        page: page,
-        limit: limit,
+        page: page === 0 ? 1: page,
+        limit,
         total: data.count,
         previous: previous,
         next: nextPage,
@@ -45,6 +64,7 @@ const paginationOptions = (data: {rows: Todo[], count: number}, page: number, li
 export const utils = {
     buildModelErrors,
     errorResponse,
-    paginationOptions,
-    buildRequestBodyErrors
+    paginationMeta,
+    buildRequestBodyErrors,
+    defaultPaginationOptions
 }
