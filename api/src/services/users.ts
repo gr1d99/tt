@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 import type express from 'express'
 import { type Optional } from 'sequelize'
-import * as console from 'console'
 import User, { type UserAttributes } from '../db/models/user'
 import Todo from '../db/models/todo'
 import { utils } from '../utils'

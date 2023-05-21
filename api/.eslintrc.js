@@ -5,7 +5,6 @@ module.exports = {
     es2021: true
   },
   extends: [
-    'airbnb',
     'standard-with-typescript'
   ],
   overrides: [
