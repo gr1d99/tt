@@ -3,6 +3,20 @@ import TodosService from '../services/todos'
 import { utils } from '../utils'
 
 class TodosController {
+  async one (req: express.Request, res: express.Response) {
+    try {
+      const todo = TodosService.one(req.params.id)
+
+      if (todo === null) {
+        return res.status(404).send({ errors: ['Todo not found'] })
+      }
+
+      res.status(200).send(todo)
+    } catch (e: any) {
+      utils.errorResponse(e, res)
+    }
+  }
+
   async create (req: express.Request, res: express.Response) {
     try {
       const todo = await TodosService.create(req.body)

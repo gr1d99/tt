@@ -6,13 +6,21 @@ import User from '../db/models/user'
 
 type TodoData = Pick<TodoAttributes, 'description' | 'userId' | 'id'>
 class TodosService {
-  static async create (data: Omit<TodoData, 'id'>) {
+  async one (id: string) {
+    try {
+      return await Todo.findByPk(id)
+    } catch (e: any) {
+      throw Error(e)
+    }
+  }
+
+  async create (data: Omit<TodoData, 'id'>) {
     const todo = Todo.build(data)
     await todo.save()
     return todo
   }
 
-  static async all (query: express.Request['query']) {
+  async all (query: express.Request['query']) {
     const data = await Todo.findAndCountAll({
       ...utils.defaultPaginationOptions(query),
       include: [
@@ -25,7 +33,7 @@ class TodosService {
     return utils.paginationMeta(data, query)
   }
 
-  static async update (data: TodoData) {
+  async update (data: TodoData) {
     try {
       const todo = await Todo.findByPk(data.id)
 
@@ -45,7 +53,7 @@ class TodosService {
     }
   }
 
-  static async destroy (id: string) {
+  async destroy (id: string) {
     try {
       const todo = await Todo.findByPk(id)
 
@@ -62,4 +70,4 @@ class TodosService {
   }
 }
 
-export default TodosService
+export default new TodosService()
