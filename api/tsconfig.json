@@ -115,6 +115,7 @@
   ],
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "server.ts"
   ],
 }

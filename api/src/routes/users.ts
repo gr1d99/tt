@@ -15,5 +15,6 @@ usersRouter
   )
   .get('/users', UsersController.all)
   .get('/users/:id', UsersController.one)
+  .put('/users/:id', UsersController.update)
 
 export default usersRouter

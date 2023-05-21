@@ -1,5 +1,5 @@
-import app from './app'
-import sequelizeConnection from './config/db-connect'
+import app from './src/app'
+import sequelizeConnection from './src/config/db-connect'
 
 sequelizeConnection.authenticate().then(() => {
   console.log('Database connected')

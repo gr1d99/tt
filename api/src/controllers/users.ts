@@ -36,6 +36,20 @@ class UsersController {
       utils.errorResponse(e, res)
     }
   }
+
+  async update (req: express.Request, res: express.Response) {
+    try {
+      const user = await UsersService.update({ ...req.body, id: req.params.id })
+
+      if (user === null) {
+        return res.status(404).send({ errors: ['user not found'] })
+      }
+
+      res.status(200).send(user)
+    } catch (e: any) {
+      utils.errorResponse(e, res)
+    }
+  }
 }
 
 export default new UsersController()

@@ -1,8 +1,12 @@
 import bcrypt from 'bcrypt'
 import type express from 'express'
+import { type Optional } from 'sequelize'
+import * as console from 'console'
 import User, { type UserAttributes } from '../db/models/user'
 import Todo from '../db/models/todo'
 import { utils } from '../utils'
+
+type UpdateUserData = Required<Pick<UserAttributes, 'id' | 'email' | 'password'>>
 
 const SALT_ROUNDS = 10
 
@@ -48,6 +52,25 @@ class UsersService {
     })
 
     return utils.paginationMeta(userTodos, query)
+  }
+
+  async update (data: UpdateUserData) {
+    try {
+      const user = await User.findByPk(data.id)
+      if (user === null) {
+        return user
+      }
+
+      const dataCopy: Optional<UpdateUserData, 'id'> = { ...data }
+      delete dataCopy.id
+
+      await user.update(dataCopy)
+      await user.reload()
+
+      return user
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 }
 
