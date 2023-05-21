@@ -4,6 +4,7 @@ dotenv.config()
 
 import express from 'express'
 import cors from 'cors'
+
 import appRouter from "./routes";
 import requestBodyErrorHandler from "./middlewares/request-body-error-handler";
 import sequelizeConnection from "./config/db-connect";

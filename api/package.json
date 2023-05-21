@@ -5,8 +5,8 @@
   "main": "src/server.ts",
   "scripts": {
     "build": "tsc && rm -rf dist/tests",
-    "watch": "tsc --watch",
-    "start": "concurrently --kill-others \"npm run watch\" \"nodemon --inspect ./dist/server.js\"",
+    "watch": "tsc -w",
+    "start": "concurrently --kill-others \"npm run watch\" \"nodemon --inspect ./dist/src/server.js\"",
     "migration:create": "npm run build && npx sequelize-cli migration:create --name",
     "db:migrate": "npm run build && npx sequelize-cli db:migrate",
     "migration:undo": "npm run build && npx sequelize-cli db:migrate:undo",
